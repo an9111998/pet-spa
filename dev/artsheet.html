@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Art sheet — Spa Thú Cưng</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css">
+<style>
+  body { padding: 16px; }
+  .grid { display: flex; flex-wrap: wrap; gap: 10px; }
+  .cell { background: #fffdf8; border-radius: 14px; padding: 6px; text-align: center;
+          box-shadow: 0 0 0 1.5px #ecdac2; }
+  .cell i { display: block; font-style: normal; font-size: 11px; color: #8d7767; }
+  h3 { margin: 18px 0 8px; font-size: 15px; }
+  .bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+</style>
+</head>
+<body>
+<h2>Bảy giai đoạn của một bé</h2>
+<div class="grid" id="states"></div>
+
+<h2>Mỗi giống, sáu bé khác nhau</h2>
+<div id="breeds"></div>
+
+<h2>Biểu cảm</h2>
+<div class="grid" id="moods"></div>
+
+<h2>Vật tư</h2>
+<div class="grid" id="items"></div>
+
+<h2>Icon</h2>
+<div class="grid" id="icons"></div>
+
+<script src="../js/art.js"></script>
+<script src="../js/data.js"></script>
+<script>
+const cell = (h, t) => `<div class="cell">${h}<i>${t}</i></div>`;
+
+/* một bé đi qua đủ các trạng thái của lượt spa */
+const L = makeLook('poodle', 1234);
+document.getElementById('states').innerHTML = [
+  [{ state: 'dirty' }, 'mới tới (bẩn)'],
+  [{ state: 'soap' }, 'đang xoa bọt'],
+  [{ state: 'wet' }, 'ướt sũng'],
+  [{}, 'sấy khô xong'],
+  [{ style: 'gaubong' }, 'kiểu gấu bông'],
+  [{ style: 'muahe' }, 'kiểu mùa hè'],
+  [{ style: 'thietke', state: 'scent', bow: 1 }, 'thiết kế + thơm + nơ']
+].map(([o, t]) => cell(petHead('poodle', L, 'happy', { w: 120, ...o }), t)).join('');
+
+document.getElementById('breeds').innerHTML = BREED_KEYS.map(b => `
+  <h3>${BREEDS[b].n} — ${BREEDS[b].kg[0]}–${BREEDS[b].kg[1]}kg</h3>
+  <div class="grid">${[1, 2, 3, 4, 5, 6].map(i => {
+    const lk = makeLook(b, i * 7919 + 13);
+    return cell(petHead(b, lk, 'happy', { w: 110 }), `seed ${i} · ${lk.mark || 'trơn'}`);
+  }).join('')}</div>`).join('');
+
+document.getElementById('moods').innerHTML =
+  ['happy', 'ok', 'sad', 'mad', 'cry', 'sleep', 'love'].map(m =>
+    cell(petHead('golden', makeLook('golden', 99), m, { w: 110 }), m)).join('');
+
+document.getElementById('items').innerHTML = SUPPLY_KEYS.map(k =>
+  cell(itemArt(k, 40), SUPPLY[k].s)).join('');
+
+document.getElementById('icons').innerHTML = Object.keys(ICONS).map(k =>
+  cell(ic(k).replace('class="ic ', 'style="width:32px;height:32px" class="ic '), k)).join('');
+</script>
+</body>
+</html>

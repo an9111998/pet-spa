@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="color-scheme" content="only light">
+<meta name="theme-color" content="#fbf1e2">
+<title>Spa Thú Cưng</title>
+<meta name="description" content="Game mô phỏng tiệm spa thú cưng: nhận một bé, cân, chọn menu theo kg, làm tám bước spa rồi trả về thơm tho.">
+
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Pet Spa">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+<meta property="og:title" content="Spa Thú Cưng">
+<meta property="og:description" content="Nhận một bé, chăm cho tới, trả về thơm tho.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="icons/icon-512.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="app">
+  <header id="hd"></header>
+  <main id="view"></main>
+</div>
+
+<div id="modal" hidden><div class="card" id="card"></div></div>
+<div id="splash" hidden></div>
+<div id="toast" hidden></div>
+
+<script src="js/art.js"></script>
+<script src="js/data.js"></script>
+<script src="js/game.js"></script>
+
+<script>
+/* Đăng ký service worker để cài được lên màn hình chính và chơi offline.
+   Chỉ chạy trên http/https — mở bằng file:// thì bỏ qua, không báo lỗi. */
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+  addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js')
+      .then(reg => reg.update())
+      .catch(() => { });
+  });
+}
+</script>
+</body>
+</html>

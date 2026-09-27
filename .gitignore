@@ -1,0 +1,10 @@
+.DS_Store
+Thumbs.db
+node_modules/
+.netlify/
+.vercel/
+
+# dev/ CỐ Ý không bị loại khỏi repo.
+# Bản khách sạn trước đây gitignore cả dev/, nên clone ở máy khác là mất sạch
+# công cụ kiểm tra. Ở đây dev/ vẫn vào repo, chỉ bị loại khỏi bản deploy
+# bằng .vercelignore.
