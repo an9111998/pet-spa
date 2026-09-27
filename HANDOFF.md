@@ -154,22 +154,35 @@ Tất cả đã sửa. Ghi lại vì loại nào cũng **im lặng**, game vẫn
 
 ## 5. Deploy
 
-Vercel project `spa-thu-cung` (team `thesis-demo`) **chưa nối git**, nên **push
-không tự deploy**.
+Vercel project `spa-thu-cung` (team `thesis-demo`) **đã nối git** với repo
+`an9111998/pet-spa`, nhánh `main`. **Push lên `main` là tự deploy production.**
+Không phải chạy gì bằng tay nữa.
 
-Nối git cần **hai** bước trên web, và chúng là hai thứ khác nhau — làm xong bước
-một mà tưởng đã xong là chuyện đã xảy ra:
+### Nếu phải nối lại từ đầu
+
+Nối git cần **hai** bước trên web, và chúng là hai thứ khác nhau. Làm xong bước
+một rồi tưởng đã xong là chuyện đã xảy ra — nhận ra nhờ thông báo lỗi **đổi nội
+dung**, chứ không phải vì nó hết lỗi:
 
 | Bước | Làm ở đâu | Thiếu nó thì API trả |
 | --- | --- | --- |
 | 1. **Login Connection** | <https://vercel.com/account/login-connections> → GitHub → Connect | `You need to add a Login Connection to your GitHub account first` |
 | 2. **Cài GitHub App của Vercel** | <https://github.com/apps/vercel> → Install → chọn `an9111998` → cho quyền trên `pet-spa` | `To link a GitHub repository, you need to install the GitHub integration first` |
 
-Trạng thái hiện tại: **bước 1 đã xong, bước 2 chưa.** Xong bước 2 thì gọi
-`create_git_project` (repo `an9111998/pet-spa`, team `thesis-demo`) là nối được,
-từ đó push là tự deploy.
+Xong hai bước đó thì nối bằng:
 
-Chưa nối git thì deploy bằng cách **upload từng file** qua REST API:
+```
+POST /v9/projects/spa-thu-cung/link?teamId=<team>
+{ "type": "github", "repo": "an9111998/pet-spa" }
+```
+
+> Đừng dùng `create_git_project` để nối một project **đã tồn tại** — nó chỉ tạo
+> project mới, không nối lại project cũ đang bỏ trống. Tạo project mới là mất
+> domain `spa-thu-cung.vercel.app` đang chạy.
+
+### Deploy tay (khi git hỏng hoặc cần thử nhanh)
+
+Upload từng file qua REST API:
 `POST /v2/files` mỗi file kèm header `x-vercel-digest: <sha1>`, rồi
 `POST /v13/deployments` với `files: [{file, sha, size}]`, `target: production` và
 `projectSettings` để `null` hết (trang tĩnh, không có bước build).
@@ -203,8 +216,7 @@ Sửa code xong nhớ **tăng `VERSION` trong `sw.js`** (hiện `v2.0.0`) rồi 
 
 - [ ] **Chơi thử trên điện thoại thật.** Tới giờ chỉ verify ở khổ 430×900 bằng
       trình duyệt điều khiển tự động. Chưa ai chạm tay vào thật.
-- [ ] **Cài GitHub App của Vercel** (mục 5, bước 2) để push là tự deploy. Hiện
-      mỗi lần sửa phải chạy tay `node ~/vercel-deploy.mjs`.
+- [x] ~~Nối git cho Vercel~~ — xong, push lên `main` là tự deploy.
 
 ### Nên làm
 

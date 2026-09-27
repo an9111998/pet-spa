@@ -240,14 +240,14 @@ Xem toàn bộ hình vẽ: mở `dev/artsheet.html`.
 Trang tĩnh thuần, không build step, không backend. Kéo thả lên bất cứ host tĩnh
 nào là chạy.
 
-**Vercel** (đang dùng — project `spa-thu-cung`):
+**Vercel** (đang dùng — project `spa-thu-cung`, đã nối git):
+
+Push lên `main` là **tự deploy production**, không cần chạy gì thêm.
+Muốn deploy tay thì:
 
 ```bash
 npx vercel --prod
 ```
-
-> Project hiện **chưa nối git**, nên push không tự deploy. Xem `HANDOFF.md` mục 5
-> để biết còn thiếu bước nào và cách deploy tay trong lúc chờ.
 
 **Netlify**: mở <https://app.netlify.com/drop>, kéo nguyên thư mục vào khung.
 
