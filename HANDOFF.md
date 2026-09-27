@@ -8,9 +8,19 @@ Cơ chế chi tiết nằm ở `README.md`; file này chỉ nói **trạng thái
 
 | | |
 | --- | --- |
-| Bản chạy thật | <https://pet-spa-thesis-demo.vercel.app> |
+| Bản chạy thật | <https://spa-thu-cung.vercel.app> |
 | Mã nguồn | <https://github.com/an9111998/pet-spa> (nhánh `main`) |
-| Vercel project | `pet-spa`, team `thesis-demo` |
+| Vercel project | `spa-thu-cung`, team `thesis-demo` |
+
+> **Vì sao tên project khác tên repo.** Vercel gán `<tên-project>.vercel.app` nếu
+> tên đó còn trống trên toàn hệ thống, không thì thêm hậu tố slug team. Repo tên
+> `pet-spa` nhưng `pet-spa.vercel.app` đã có người khác chiếm, nên project tên
+> `pet-spa` chỉ nhận được `pet-spa-thesis-demo.vercel.app`. Đổi tên project sang
+> `spa-thu-cung` (còn trống) là ra domain sạch. Project `pet-spa` cũ đã xoá.
+>
+> **Cách kiểm một domain còn trống hay không:** `curl -o /dev/null -w '%{http_code}'
+> https://<tên>.vercel.app`. `*.vercel.app` là DNS wildcard nên **404 = còn trống**,
+> **200 = đã có người**. Rất dễ đọc ngược.
 
 ---
 
@@ -144,20 +154,22 @@ Tất cả đã sửa. Ghi lại vì loại nào cũng **im lặng**, game vẫn
 
 ## 5. Deploy
 
-Vercel project `pet-spa` (team `thesis-demo`) **chưa nối git**, nên **push không
-tự deploy**.
+Vercel project `spa-thu-cung` (team `thesis-demo`) **chưa nối git**, nên **push
+không tự deploy**.
 
-Lý do: account Vercel này chưa có **GitHub Login Connection**, mà đó là bước chỉ
-làm được trên web. Thiếu nó thì mọi cách nối repo qua API đều trả
-`bad_request — You need to add a Login Connection to your GitHub account first`.
+Nối git cần **hai** bước trên web, và chúng là hai thứ khác nhau — làm xong bước
+một mà tưởng đã xong là chuyện đã xảy ra:
 
-Muốn push tự deploy thì làm một lần:
+| Bước | Làm ở đâu | Thiếu nó thì API trả |
+| --- | --- | --- |
+| 1. **Login Connection** | <https://vercel.com/account/login-connections> → GitHub → Connect | `You need to add a Login Connection to your GitHub account first` |
+| 2. **Cài GitHub App của Vercel** | <https://github.com/apps/vercel> → Install → chọn `an9111998` → cho quyền trên `pet-spa` | `To link a GitHub repository, you need to install the GitHub integration first` |
 
-1. Mở <https://vercel.com/account/login-connections>
-2. Dòng **GitHub** → **Connect** → đăng nhập `an9111998` → **Authorize Vercel**
-3. Rồi nối repo `an9111998/pet-spa` vào project `pet-spa`
+Trạng thái hiện tại: **bước 1 đã xong, bước 2 chưa.** Xong bước 2 thì gọi
+`create_git_project` (repo `an9111998/pet-spa`, team `thesis-demo`) là nối được,
+từ đó push là tự deploy.
 
-Chưa làm bước đó thì deploy bằng cách **upload từng file** qua REST API:
+Chưa nối git thì deploy bằng cách **upload từng file** qua REST API:
 `POST /v2/files` mỗi file kèm header `x-vercel-digest: <sha1>`, rồi
 `POST /v13/deployments` với `files: [{file, sha, size}]`, `target: production` và
 `projectSettings` để `null` hết (trang tĩnh, không có bước build).
@@ -165,15 +177,21 @@ Chưa làm bước đó thì deploy bằng cách **upload từng file** qua REST
 Script làm việc đó nằm **ngoài repo**, tại `~/vercel-deploy.mjs`:
 
 ```bash
-node ~/vercel-deploy.mjs D:/games/pet-spa pet-spa
+node ~/vercel-deploy.mjs D:/games/pet-spa spa-thu-cung
 ```
+
+Tham số thứ hai là **tên project trên Vercel**, không phải tên thư mục — đưa sai
+tên là nó tạo ra một project mới thay vì cập nhật project đang chạy.
 
 Nó đặt ngoài repo cố ý, vì phải đọc file token OAuth trong thư mục cấu hình cục
 bộ của máy — đường dẫn đó không nên nằm trong một repo public.
 
 > **Cạm bẫy:** project mới trên Vercel bật sẵn Deployment Protection, mọi URL trả
-> 302. Tắt bằng `PATCH /v9/projects/pet-spa` với `{"ssoProtection": null}`.
-> Đã tắt cho project này rồi, nhưng tạo project mới là gặp lại.
+> **302** sang trang đăng nhập Vercel. Tắt bằng
+> `PATCH /v9/projects/<tên>?teamId=...` với `{"ssoProtection": null}`.
+> Đã tắt cho `spa-thu-cung`, nhưng **tạo project mới là gặp lại** — và nó rất dễ
+> lọt, vì trình duyệt của bạn đang đăng nhập Vercel nên mở link vẫn thấy site bình
+> thường, chỉ người ngoài mới bị chặn. Luôn kiểm bằng `curl`, đừng kiểm bằng mắt.
 
 Sửa code xong nhớ **tăng `VERSION` trong `sw.js`** (hiện `v2.0.0`) rồi deploy lại.
 
@@ -185,7 +203,8 @@ Sửa code xong nhớ **tăng `VERSION` trong `sw.js`** (hiện `v2.0.0`) rồi 
 
 - [ ] **Chơi thử trên điện thoại thật.** Tới giờ chỉ verify ở khổ 430×900 bằng
       trình duyệt điều khiển tự động. Chưa ai chạm tay vào thật.
-- [ ] **Nối git cho Vercel** (mục 5) để push là tự deploy.
+- [ ] **Cài GitHub App của Vercel** (mục 5, bước 2) để push là tự deploy. Hiện
+      mỗi lần sửa phải chạy tay `node ~/vercel-deploy.mjs`.
 
 ### Nên làm
 

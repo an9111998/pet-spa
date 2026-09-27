@@ -1,5 +1,7 @@
 # Spa Thú Cưng
 
+**Chơi ngay: <https://spa-thu-cung.vercel.app>**
+
 Game mô phỏng **tiệm spa thú cưng**. Nhận một bé lên bàn, cân để biết bậc giá,
 chốt menu, làm đủ tám bước spa theo thứ tự, xử lý mấy pha bé làm khó, rồi trả
 về cho chủ thơm tho.
@@ -238,11 +240,14 @@ Xem toàn bộ hình vẽ: mở `dev/artsheet.html`.
 Trang tĩnh thuần, không build step, không backend. Kéo thả lên bất cứ host tĩnh
 nào là chạy.
 
-**Vercel** (đang dùng):
+**Vercel** (đang dùng — project `spa-thu-cung`):
 
 ```bash
 npx vercel --prod
 ```
+
+> Project hiện **chưa nối git**, nên push không tự deploy. Xem `HANDOFF.md` mục 5
+> để biết còn thiếu bước nào và cách deploy tay trong lúc chờ.
 
 **Netlify**: mở <https://app.netlify.com/drop>, kéo nguyên thư mục vào khung.
 
